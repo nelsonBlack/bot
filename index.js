@@ -5,7 +5,7 @@ const {
   Markup
 } = Telegraf
 
-const app = new Telegraf('')
+const app = new Telegraf('<telegram api token>')
 // const PAYMENT_TOKEN = ''
 
 const products = [{
@@ -31,7 +31,15 @@ const products = [{
 ]
 
 
-app.command('start', ({ reply }) => reply('welcome, i can sell you stuff just ask'))
-app.hears(/^what.*/i, ({ replyWithMarkdown }) => replyWithMarkdown('foo'));
+app.command('start', ({
+  reply
+}) => reply('welcome, i can sell you stuff just ask'))
+// regex to reply when user enters anything with what
+app.hears(/^what.*/i, ({
+  replyWithMarkdown
+}) => replyWithMarkdown(`Let me show you my products!
+  ${products.reduce((acc, p) => acc += `*${p.name}* - ${p.price} KES\n`, '')}
+  What do You want?`, Markup.keyboard(products.map(p => p.name)).oneTime().resize().extra()));
+
 
 app.startPolling()
